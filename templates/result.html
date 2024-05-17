@@ -13,7 +13,7 @@
     </head>
     <body>
         <!-- Responsive navbar-->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
                 <a class="navbar-brand" href="/">HH Parser</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -38,15 +38,35 @@
             <div class="container my-5">
                 <div class="row justify-content-center">
                     <div class="col-lg-6">
-                        <h2>Форма для поиска</h2>
+                        <h2>Результаты</h2>
                         <br>
-                        <form action = /result/ method="post">
-                                <input class="form-control" type="text" name = "vacancy_name" placeholder="Введите название вакансии">
-                                <br>
-                                <input class="form-control" type="text" name = "vacancy_area" placeholder="Введите город">
-                                <br>
-                                <input type="submit" value="Показать отчет" class="btn btn-dark">
-                        </form>
+                        <ul>
+                        <li class="lead">Вакансия: {{result_pars['Вакансия']}} </li>
+                        <li class="lead">Всего вакансий: {{result_pars['Всего вакансий']}} </li>
+                        <li class="lead">Средняя зарплата от: {{result_pars['Средняя зарплата от']}} руб. </li>
+                        <li class="lead">Средняя зарплата до: {{result_pars['Средняя зарплата до']}} руб. </li>
+                        <li class="lead">Требования: </li>
+                        </ul>
+                        <table class="table">
+                            <thead class="lead">
+                            <tr>
+                                <th scope="col">Номер</th>
+                                <th scope="col">Навык</th>
+                                <th scope="col">Количество</th>
+                                <th scope="col">Процент упоминаний</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in  result_pars['Требования']%}
+                            <tr>
+                                <th align="center" scope="row" >{{loop.index}}</th>
+                                <td align="center">{{item['Навыки'].capitalize()}}</td>
+                                <td align="center">{{item['Количество']}}</td>
+                                <td align="center">{{item['Процент']}}%</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
