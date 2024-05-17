@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from parser import parser_vacancies
+import sqlite3
 
 app = Flask(__name__)
 
@@ -28,6 +29,39 @@ def result():
     vacancy_name = request.form['vacancy_name']
     result_pars = parser_vacancies(vacancy_name, vacancy_area)
     # print(result_pars)
+
+    conn = sqlite3.connect('hh.sqlite')
+    cursor = conn.cursor()
+
+    # Таблица Vacancies
+    cursor.execute("""
+    INSERT INTO Vacancies (VacancyName, TotalVacancies, AvgSalaryFrom, AvgSalaryTo)
+    VALUES (?, ?, ?, ?)
+    """, (result_pars['Вакансия'], result_pars['Всего вакансий'], result_pars['Средняя зарплата от'],
+          result_pars['Средняя зарплата до']))
+
+    # Таблица Skills
+    vacancy_id = cursor.lastrowid
+    skills = [x['Навыки'] for x in result_pars['Требования']]
+    skill_ids = {}
+    for skill in skills:
+        cursor.execute("""
+        INSERT INTO Skills (SkillName) VALUES (?)
+        """, (skill,))
+        skill_ids[skill] = cursor.lastrowid
+
+    # Таблица Requirements
+    requirements = [x for x in result_pars['Требования']]
+    for requirement in requirements:
+        skill, quantity, percentage = requirement.values()
+        cursor.execute("""
+        INSERT INTO Requirements (VacancyID, SkillID, Quantity, Percentage)
+        VALUES (?, ?, ?, ?)
+        """, (vacancy_id, skill_ids[skill], quantity, percentage))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
     return render_template('result.html', result_pars=result_pars)
 
 
