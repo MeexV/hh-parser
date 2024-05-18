@@ -45,7 +45,8 @@ def parser_vacancies(vacancy_name,vacancy_area, choise_pages = 1):
 
     vacancy = {
         "Вакансия": vacancy_name,
-        "Всего вакансий": all_count_vacancies
+        "Всего вакансий": all_count_vacancies,
+        "Город": vacancy_area
     }
     salary = {
         'from': [],
@@ -112,7 +113,7 @@ def parser_vacancies(vacancy_name,vacancy_area, choise_pages = 1):
     for i in list_sk:
         i['Процент'] = round(i['Количество'] /total_count*100, 2)
     vacancy['Требования'] = list_sk
-    #pprint.pprint(vacancy)
+    pprint.pprint(vacancy)
 
     with open('result.json', mode='w', encoding='utf-8') as f:
         jdump([vacancy], f, ensure_ascii=False)
